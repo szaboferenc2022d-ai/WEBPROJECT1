@@ -3,9 +3,12 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import { fileURLToPath } from 'url';
+import 'dotenv/config';
 
 import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
+import termekRouter from './routes/termekek.js';
+
 
 const app = express();
 
@@ -23,5 +26,5 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
+app.use('/termekek', termekRouter);
 export default app;

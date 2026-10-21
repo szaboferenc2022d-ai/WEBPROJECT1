@@ -1,0 +1,62 @@
+import api from '../api/axiosPeldany';
+import { useState } from 'react';
+
+export default function UserFrom() {
+    const [formdata, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: ''
+    });
+    const [error, setError] = useState(null);
+    const [message, setMessage] = useState(null);
+
+    const handleChange = (e) => {
+        setFormData({ ...formdata, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await api.post('/users/login', formdata);
+            console.log('Registracios successful:', response.data);
+            setMessage('Sikeres regisztrációs');
+            setError(null);
+        } catch (error) {
+            console.error('Registracios failed:', error.response ? error.response.data : error.message);
+            setError('Sikertelen regisztrációs');
+            setMessage(null);
+        }
+    };
+
+    return (
+        <div className="regist-form">
+            <h2>Bejelentkezés</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="email">Vezetéknev:</label>
+                    <input type="text" onChange={handleChange} id="firstName" name="firstName" required />
+                </div>
+                 <div>
+                    <label htmlFor="email">Keresztnev:</label>
+                    <input type="text" onChange={handleChange} id="lastName" name="lastName" required />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="email">Email:</label>
+                    <input type="email" onChange={handleChange} id="email" name="email" required />
+                </div>
+                 <div>
+                    <label htmlFor="email">Életkor:</label>
+                    <input type="number" onChange={handleChange}  />
+                </div>
+                <div>
+                    <label htmlFor="email">Szerepkör:</label>
+                    <select name="lista" id=""></select>
+                </div>
+                <button type="submit">Bejelentkezés</button>
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+                {message && <p style={{ color: 'green' }}>{message}</p>}
+            </form>
+            
+        </div>
+    );
+}

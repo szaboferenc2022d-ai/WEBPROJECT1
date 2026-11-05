@@ -60,7 +60,12 @@ const UserController = {
                 res.status(401).json({ error: 'Hibás jelszó' });
                 return;
             }
-            res.json({ message: 'Sikeres bejelentkezés', user });
+            await userModel.updateLastLogin(user.id); // Update last login timestamp
+
+            const accassToken = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_ACCESS_SECRET, { expiresIn: '10m' });
+            const refreshToken = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+
+            res.json({ message: 'Sikeres bejelentkezés', user, accassToken, refreshToken });
         } catch (error) {
             console.error('Error during login:', error);
             res.status(500).json({ error: 'Internal Server Error' });

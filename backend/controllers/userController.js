@@ -73,6 +73,14 @@ const UserController = {
                 maxAge: 7 * 24 * 60 * 60 * 1000 // 7 nap
             });
 
+            res.cookie('accessToken', accessToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'Strict',
+                maxAge: 10 * 60 * 1000 // 10 perc
+            });
+
+
             res.json({ message: 'Sikeres bejelentkezés', accessToken});
         } catch (error) {
             console.error('Error during login:', error);

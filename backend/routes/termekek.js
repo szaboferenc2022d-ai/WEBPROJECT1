@@ -1,5 +1,5 @@
 import express from "express";
-import termekController from "../controlles/termekControlles.js";
+import termekController from "../controllers/termekControlles.js";
     
 const router = express.Router();
 

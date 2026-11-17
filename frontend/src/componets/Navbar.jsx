@@ -8,6 +8,9 @@ export default function Navbar() {
             <NavLink to="/login">Login</NavLink>
             <NavLink to="/user">User</NavLink>
             <NavLink to="/admin">Admin</NavLink>
+            <NavLink to="/multiform">MultiForm</NavLink>
+            <NavLink to="/test">Test</NavLink>
+            <NavLink to="/logout">Logout</NavLink>
         </nav>
     );
 }

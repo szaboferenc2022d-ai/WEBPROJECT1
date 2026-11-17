@@ -4,7 +4,8 @@ import axios from 'axios';
 const api = axios.create({  
     baseURL: 'https://jsonplaceholder.typicode.com/users ',
     timeout: 5000,
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json' }, 
+    withCredentials: true, // Ha szükséges a cookie-k küldése
 });
 
 

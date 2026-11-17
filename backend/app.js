@@ -12,7 +12,10 @@ import termekRouter from './routes/termekek.js';
 
 
 const app = express();
-
+app.use(cors({
+    origin: true, // Engedélyezett eredet (origin) beállítása, pl. 'http://localhost:3000'
+    credentials: true, // Ha szükséges a cookie-k küldése
+}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

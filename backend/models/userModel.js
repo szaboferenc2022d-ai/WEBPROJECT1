@@ -10,29 +10,32 @@ const UserModel = {
     // Felhasználó lekérése ID alapján
     async getById(id) {
         const [rows] = await pool.query(
-            'SELECT * FROM users WHERE id = ?',[id]);
+            'SELECT * FROM users WHERE id = ?', [id]
+        );
         return rows[0];
     },
 
     // Új felhasználó hozzáadása
     async create(user) {
-        const { email, password, name, phone, profilimage } = user;
-        const [result] = await pool.query('INSERT INTO users (email, password, name, phone, profilimage) VALUES (?, ?, ?, ?, ?)',[email, password , name, phone ?? null, profilimage ?? null]
+        // Javítva: elfogadja a profileimage és a profilimage nevet is
+        const { email, password, name, phone, profileimage, profilimage } = user;
+        const [result] = await pool.query(
+            'INSERT INTO users (email, password, name, phone, profilimage) VALUES (?, ?, ?, ?, ?)',
+            [email, password, name, phone ?? null, profilimage ?? profileimage ?? null]
         );
-        return {id: result.insertId, ...user};
+        return { id: result.insertId, ...user };
     },
 
     // Felhasználó lekérése email alapján
     async getByEmail(email) {
-    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-    return rows[0];
-  },
+        const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+        return rows[0];
+    },
 
-  async updateLastLogin(test) {
-    res.json({ message: 'Sikeres bejelentkezés', test });
-  }
-
+    // Javítva: valódi SQL frissítés a res.json helyett
+    async updateLastLogin(id) {
+        await pool.query('UPDATE users SET lastlogin = NOW() WHERE id = ?', [id]);
+    }
 };
-
 
 export default UserModel;

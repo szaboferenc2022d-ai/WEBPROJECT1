@@ -33,12 +33,12 @@ const UserController = {
     // Új felhasználó hozzáadása
     async create(req, res) {
         const { email, password, name, phone, profileimage } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10); // Jelszó hash-elése
         try {
+            const hashedPassword = await bcrypt.hash(password, 10); // Javítva: bekerült a try blokkba
             const newUser = await userModel.create({ email, password: hashedPassword, name, phone, profileimage });
             res.status(201).json(newUser);
         } catch (error) {
-            if(error.code === 'ER_DUP_ENTRY') {
+            if (error.code === 'ER_DUP_ENTRY') {
                 res.status(400).json({ error: 'Ez az email cím már létezik' });
                 return;
             }
@@ -67,21 +67,20 @@ const UserController = {
             const refreshToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 
             res.cookie('refreshToken', refreshToken, {
-                httpOnly: true, // Csak a szerver férhet hozzá, nem a kliens oldali JavaScript
-                secure: false, // Csak HTTPS-en keresztül küldhető
-                sameSite: 'Strict', // CSRF elleni védelem (Cross-Site Request Forgery)
-                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 nap
+                httpOnly: true,
+                secure: false,
+                sameSite: 'Strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000
             });
 
             res.cookie('accessToken', accessToken, {
                 httpOnly: true,
                 secure: false,
                 sameSite: 'Strict',
-                maxAge: 10 * 60 * 1000 // 10 perc
+                maxAge: 10 * 60 * 1000
             });
 
-
-            res.json({ message: 'Sikeres bejelentkezés', accessToken});
+            res.json({ message: 'Sikeres bejelentkezés', accessToken });
         } catch (error) {
             console.error('Error during login:', error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -98,12 +97,28 @@ const UserController = {
             if (err) {
                 return res.status(403).json({ error: 'Érvénytelen frissítő token' });
             }
-          const newAccessToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_ACCESS_SECRET, { expiresIn: '10m' });
-        res.json({ accessToken: newAccessToken });
+            const newAccessToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_ACCESS_SECRET, { expiresIn: '10m' });
+            
+            // Javítva: az accessToken sütit is frissíti
+            res.cookie('accessToken', newAccessToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'Strict',
+                maxAge: 10 * 60 * 1000
+            });
+
+            res.json({ accessToken: newAccessToken });
         });
     },
+
     async logout(req, res) {
-        res.clearCookie('refreshToken', {
+        res.clearCookie('refreshToken', { 
+            httpOnly: true, 
+            secure: false, 
+            sameSite: 'Strict'
+        });
+
+        res.clearCookie('accessToken', {
             httpOnly: true,
             secure: false,
             sameSite: 'Strict'

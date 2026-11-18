@@ -1,4 +1,4 @@
-import api from '../api/axiosPeldany';
+import api from '../api/axiosInstance';
 import { useState } from 'react';
 
 export default function UserForm() {

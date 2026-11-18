@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '../api/axiosPeldany';
+import api from '../api/axiosInstance';
 import Termenycard from './Termenycard';
 
 export default function TermekLista() {

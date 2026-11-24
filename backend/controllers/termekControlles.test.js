@@ -1,13 +1,39 @@
+import termekModel from "../models/termekModel";
 import termekControlles from "./termekControlles";
-import {describe, expect, jest, test} from '@jest/globals';
+import {beforeEach, expect, jest, test} from '@jest/globals';
 
-const mockedModel = jest.Mock("..models/termekModel");
+const termekModelMock = {
+    getAll: jest.fn(),
+    getById: jest.fn(),
+    create: jest.fn()
+};
+
+jest.unstable_mockModule("../models/termekModel.js", () =>({
+    default: termekModelMock,
+}))
+
+const {default: termekControlles} = await import("./termekControlles.js");
+
+const crreateResponse = () => {
+    const res = {
+        status: jest.fn(),
+        json: json.fn(),
+    };
+    res.status.mockReturnValue(res);
+    res.json.mockReslvedValue(res);
+    return res;
+};
 
 test("Sampla test case", async ()=>{
-    expect(true).toBe(true);
-    const reultMock = {};
+    //SETUP
+    const products = [{ id:1, nev: "Keyboard"}];
+    termekModelMock.getAll.mockResolvedValue(products);
+    const res = crreateResponse();
    
-    mockedModel.getAll = jest .fn() .mockReslvedValue([{id: 1, nev: "Termek 1", ar: 1000, keszlet: 10}])
+    //ACT
+    const result = await termekControlles.getAll({
+    params: {}}, res);
 
-    await termekControlles.getAll({ params: {} }, reultMock)
+    //ASSERT
+    expect (result).toBeUnderfinder();
 });

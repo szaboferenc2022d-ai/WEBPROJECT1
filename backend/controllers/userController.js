@@ -1,6 +1,23 @@
 import userModel from '../models/userModel.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import multer from 'multer';
+
+const storage = multer.diskStorage({
+    diskStorage: function(req, file, cb){
+        cb(null, 'public/image/');// a faljok a publik/imagebe teszi
+    },
+    filename:function (req, file, cb){
+        cb(null, Date.now()+'-'+file+originalname); 
+    }
+});
+
+const upload = multer({storage: storage}); 
+
+function runSignleUpload(req,res,fieldName) {
+    return new Promise
+}
+
 
 const UserController = {
     // Összes felhasználó lekérése
